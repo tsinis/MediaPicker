@@ -112,7 +112,9 @@ public struct MediaPicker<AlbumSelectionContent: View, CameraSelectionContent: V
             if showingLiveCameraCell {
                 permissionService.requestCameraPermission()
             }
-            permissionService.checkPhotoLibraryAuthorizationStatus()
+            if internalPickerMode != .camera {
+                permissionService.checkPhotoLibraryAuthorizationStatus()
+            }
 
             selectionService.onChange = onChange
             selectionService.mediaSelectionLimit = selectionParamsHolder.selectionLimit
@@ -398,6 +400,12 @@ public extension MediaPicker {
     func pickerMode(_ mode: Binding<MediaPickerMode>) -> MediaPicker {
         var mediaPicker = self
         mediaPicker.pickerMode = mode
+        return mediaPicker
+    }
+
+    func initialPickerMode(_ mode: MediaPickerMode) -> MediaPicker {
+        var mediaPicker = self
+        mediaPicker._internalPickerMode = State(initialValue: mode)
         return mediaPicker
     }
 }
